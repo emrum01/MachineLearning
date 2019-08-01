@@ -24,6 +24,9 @@ class Relu:
         '''
 
         # なぜcopyじゃないといけないのか
+        '''   
+        ndarrayはmutableなのでリスト自体のidを渡している。よって渡した先で変更があれば、リスト自体にも変更があり、
+        '''
         return out,b
 
 
@@ -61,6 +64,41 @@ class Sigmoid:
 アフィン変換
 y = wx + b
 を出力する層
-ひとまず置いておくことにする
+
+points
+
+1. 流れるノードは数値から行列になる
+2. 乗算ノードではnp.dot計算を行うので掛ける行列の次元の要
+素数を一致させないといけない
+3. 一致させるためには順序変えたり、転置したりしても良い
 '''
+
+#バッチ版のaffineレイヤーはなぜバイアスの計算をいじる？
+'''
+微分したものの要素数がバイアスの要素数と一緒にならなければならないため
+
+'''
+
+# class Affine
+
+class Affine:
+    def __init__(self,w,b):
+        self.w = w
+        self.b = b
+        self.x = None
+        self.dw = None
+        self.db = None
+
+    def forward(self,x):
+        self.x = x
+        out = np.dot(x,self.w) + self.b
+
+        return out
+
+    def backward(self,dout):
+        dx = np.dot(dout, self.w.T)
+        self.dw = np.dot(self.x.T,dout)
+        self.db = np.num(dout,axis = 0)
+
+        returndx
 
